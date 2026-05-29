@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fleetview"
+version = "0.1.0"
+description = "Holistic, point-in-time inventory & reproduction of multi-cloud / hypervisor fleets."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "sp00nznet" }]
+dependencies = [
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+vmware = ["pyvmomi>=8.0"]
+# future providers:
+# proxmox = ["proxmoxer>=2.0", "requests"]
+# aws = ["boto3>=1.34"]
+# gcp = ["google-cloud-compute>=1.14"]
+all = ["pyvmomi>=8.0"]
+dev = ["pytest>=8.0", "ruff>=0.4", "mypy>=1.9"]
+
+[project.scripts]
+fleetview = "fleetview.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fleetview"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
