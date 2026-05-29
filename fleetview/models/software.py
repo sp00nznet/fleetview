@@ -56,6 +56,24 @@ class ContainerInfo(BaseModel):
     state: Optional[str] = None
 
 
+class ConfigFile(BaseModel):
+    """A captured configuration file — needed to *reproduce* a box faithfully.
+
+    `content` is optional and captured only when deep inspection is permitted; otherwise we
+    keep metadata (path/owner/mode/hash) so the reproduce engine knows what to template.
+    (whatdoesthisboxdo captures these for IaC regeneration; we model them first-class.)
+    """
+
+    path: str
+    owner: Optional[str] = None
+    group: Optional[str] = None
+    mode: Optional[str] = Field(None, description="octal permissions, e.g. '0644'")
+    size_bytes: Optional[int] = None
+    sha256: Optional[str] = None
+    belongs_to: Optional[str] = Field(None, description="service/app this config configures")
+    content: Optional[str] = Field(None, description="captured contents (deep inspection only)")
+
+
 class AppFingerprint(BaseModel):
     """A higher-level identification of an application stack running on the node.
 
@@ -80,6 +98,7 @@ class SoftwareInventory(BaseModel):
     processes: list[Process] = Field(default_factory=list)
     listeners: list[ListeningPort] = Field(default_factory=list)
     containers: list[ContainerInfo] = Field(default_factory=list)
+    config_files: list[ConfigFile] = Field(default_factory=list)
     fingerprints: list[AppFingerprint] = Field(default_factory=list)
     # True once an in-guest inspection has actually run; False means "hypervisor view only".
     deep_inspected: bool = False

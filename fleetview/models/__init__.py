@@ -23,6 +23,7 @@ from .flows import DataFlow, Endpoint
 from .inventory import Compute, Disk, Nic, OSInfo, Placement, SourceRef
 from .software import (
     AppFingerprint,
+    ConfigFile,
     ContainerInfo,
     ListeningPort,
     Package,
@@ -51,6 +52,7 @@ __all__ = [
     "Process",
     "ListeningPort",
     "ContainerInfo",
+    "ConfigFile",
     "AppFingerprint",
     # flows
     "DataFlow",
