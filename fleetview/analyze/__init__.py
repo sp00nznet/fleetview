@@ -36,5 +36,43 @@ def run_analyzers(fleet: Fleet, analyzers: list[Analyzer]) -> Fleet:
     return fleet
 
 
+def analyze_fleet(fleet: Fleet) -> Fleet:
+    """Run the default analyzer suite over the fleet (convenience)."""
+    return run_analyzers(fleet, build_default_analyzers())
+
+
+def total_estimated_savings(fleet: Fleet) -> float:
+    """Sum of estimated monthly savings across all findings in the fleet."""
+    total = 0.0
+    for node in fleet.nodes:
+        if node.analysis:
+            total += sum(f.estimated_monthly_savings_usd or 0 for f in node.analysis.findings)
+    return round(total, 2)
+
+
+# Imported at the bottom so analyzers.py can `from . import Analyzer` without a cycle.
+from .analyzers import (  # noqa: E402
+    CrossPlatformCostAnalyzer,
+    EOLAnalyzer,
+    FleetGraphAnalyzer,
+    HygieneAnalyzer,
+    RightsizingAnalyzer,
+    build_default_analyzers,
+)
+
+__all__ = [
+    "Analyzer",
+    "run_analyzers",
+    "analyze_fleet",
+    "total_estimated_savings",
+    "build_default_analyzers",
+    "CrossPlatformCostAnalyzer",
+    "RightsizingAnalyzer",
+    "EOLAnalyzer",
+    "HygieneAnalyzer",
+    "FleetGraphAnalyzer",
+]
+
+
 # NOTE: concrete analyzers (RightsizingAnalyzer, CrossPlatformCostAnalyzer, EOLAnalyzer, ...)
 # land in M3, backed by a pricing data module.

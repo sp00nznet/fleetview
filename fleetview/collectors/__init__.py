@@ -1,16 +1,19 @@
 """Provider collectors. Each adapter maps a platform onto the unified data model.
 
 Registry pattern: collectors register their ProviderKind so the CLI can dispatch by name and
-so new providers (proxmox/aws/gcp) drop in without touching the CLI.
+so new providers drop in without touching the CLI.
 """
 from __future__ import annotations
 
 from .base import Collector, CollectorError, CollectResult
 
-#: provider name -> collector class. Populated lazily to avoid importing heavy SDKs
-#: (pyvmomi/boto3/...) unless a provider is actually used.
+#: provider name -> "module:Class". Populated lazily to avoid importing heavy SDKs
+#: (pyvmomi/boto3/requests/google-cloud) unless a provider is actually used.
 _REGISTRY: dict[str, str] = {
     "vmware": "fleetview.collectors.vmware:VMwareCollector",
+    "proxmox": "fleetview.collectors.proxmox:ProxmoxCollector",
+    "aws": "fleetview.collectors.aws:AWSCollector",
+    "gcp": "fleetview.collectors.gcp:GCPCollector",
 }
 
 

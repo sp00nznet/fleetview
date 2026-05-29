@@ -1,0 +1,606 @@
+{
+  "meta": {
+    "id": "sample-fleet",
+    "captured_at": "2026-05-29T10:33:29.169593Z",
+    "fleetview_version": "0.1.0",
+    "scope": "demo: prod web tier + db (AWS)",
+    "warnings": [
+      "sample data — not a real scan"
+    ]
+  },
+  "providers": [
+    {
+      "kind": "aws",
+      "instance": "123456789012",
+      "display_name": "prod-account",
+      "endpoint": null,
+      "collected_at": "2026-05-29T10:33:29.169586Z",
+      "node_count": 3,
+      "extra": {
+        "region": "us-east-1"
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "aws:123456789012:web01",
+      "name": "web01",
+      "kind": "vm",
+      "power_state": "running",
+      "placement": {
+        "provider": "aws",
+        "host": "i-host-a",
+        "cluster": "prod-cluster",
+        "resource_pool": null,
+        "datacenter": "dc1",
+        "region": null,
+        "zone": null,
+        "folder": null
+      },
+      "compute": {
+        "vcpus": 4,
+        "cores_per_socket": null,
+        "sockets": null,
+        "memory_mb": 8192,
+        "cpu_model": null,
+        "architecture": "x86_64",
+        "firmware": null,
+        "instance_type": "t3.large"
+      },
+      "disks": [
+        {
+          "label": "root",
+          "size_gb": 80.0,
+          "disk_type": "ssd",
+          "backing": "datastore1",
+          "path": null,
+          "provisioning": null,
+          "encrypted": null,
+          "iops": null
+        }
+      ],
+      "nics": [
+        {
+          "label": "eth0",
+          "mac": "00:50:56:aa:00:01",
+          "ips": [
+            "10.0.0.11"
+          ],
+          "vlan": null,
+          "network": "prod-vlan10",
+          "switch": null,
+          "security_groups": [],
+          "connected": null
+        }
+      ],
+      "os": {
+        "family": "linux",
+        "distro": "Ubuntu 22.04",
+        "version": "22.04",
+        "kernel": null,
+        "hostname": "web01",
+        "end_of_life": null
+      },
+      "software": {
+        "packages": [
+          {
+            "name": "nginx",
+            "version": "1.18.0",
+            "manager": "apt"
+          },
+          {
+            "name": "php-fpm",
+            "version": "8.1",
+            "manager": "apt"
+          }
+        ],
+        "services": [
+          {
+            "name": "nginx",
+            "state": "running",
+            "description": null,
+            "exec_path": null
+          },
+          {
+            "name": "php8.1-fpm",
+            "state": "running",
+            "description": null,
+            "exec_path": null
+          }
+        ],
+        "processes": [],
+        "listeners": [
+          {
+            "port": 443,
+            "protocol": "tcp",
+            "address": null,
+            "process": "nginx"
+          },
+          {
+            "port": 80,
+            "protocol": "tcp",
+            "address": null,
+            "process": "nginx"
+          }
+        ],
+        "containers": [],
+        "config_files": [],
+        "fingerprints": [
+          {
+            "name": "nginx",
+            "category": "webserver",
+            "version": "1.18.0",
+            "confidence": "observed",
+            "evidence": [
+              "port 443",
+              "nginx.service"
+            ]
+          }
+        ],
+        "deep_inspected": true
+      },
+      "flows": [
+        {
+          "mechanism": "db_connection",
+          "direction": "outbound",
+          "peer": {
+            "node_id": "aws:123456789012:db01",
+            "address": null,
+            "port": 5432,
+            "label": "db01:postgres"
+          },
+          "detail": "app -> postgres",
+          "schedule": null,
+          "confidence": "observed",
+          "evidence": []
+        },
+        {
+          "mechanism": "nfs_mount",
+          "direction": "inbound",
+          "peer": {
+            "node_id": null,
+            "address": "10.0.0.50",
+            "port": null,
+            "label": "nas01:/exports/assets"
+          },
+          "detail": "/exports/assets -> /mnt/assets",
+          "schedule": null,
+          "confidence": "observed",
+          "evidence": []
+        }
+      ],
+      "tags": {
+        "env": "prod",
+        "role": "web"
+      },
+      "annotations": null,
+      "source": {
+        "provider": "aws",
+        "provider_instance": "123456789012",
+        "native_id": "web01",
+        "native_type": null,
+        "raw": {}
+      },
+      "analysis": {
+        "findings": [
+          {
+            "id": "rightsizing-cpu",
+            "category": "rightsizing",
+            "severity": "medium",
+            "title": "Over-provisioned CPU",
+            "detail": "Peak vCPU utilization low for a 4-vCPU shape.",
+            "recommendation": "Downsize to 2 vCPU (t3.medium).",
+            "estimated_monthly_savings_usd": 30.0,
+            "evidence": []
+          }
+        ],
+        "cost_estimates": [
+          {
+            "platform": "aws",
+            "instance_type": "t3.large",
+            "monthly_usd": 60.0,
+            "basis": "on-demand list",
+            "assumptions": [],
+            "is_current": true
+          },
+          {
+            "platform": "gcp",
+            "instance_type": "e2-standard-4",
+            "monthly_usd": 52.0,
+            "basis": "on-demand list",
+            "assumptions": [],
+            "is_current": false
+          },
+          {
+            "platform": "proxmox",
+            "instance_type": "4vcpu/8gb",
+            "monthly_usd": 18.0,
+            "basis": "amortized hardware",
+            "assumptions": [],
+            "is_current": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws:123456789012:web02",
+      "name": "web02",
+      "kind": "vm",
+      "power_state": "running",
+      "placement": {
+        "provider": "aws",
+        "host": "i-host-b",
+        "cluster": "prod-cluster",
+        "resource_pool": null,
+        "datacenter": "dc1",
+        "region": null,
+        "zone": null,
+        "folder": null
+      },
+      "compute": {
+        "vcpus": 4,
+        "cores_per_socket": null,
+        "sockets": null,
+        "memory_mb": 8192,
+        "cpu_model": null,
+        "architecture": "x86_64",
+        "firmware": null,
+        "instance_type": "t3.large"
+      },
+      "disks": [
+        {
+          "label": "root",
+          "size_gb": 80.0,
+          "disk_type": "ssd",
+          "backing": "datastore1",
+          "path": null,
+          "provisioning": null,
+          "encrypted": null,
+          "iops": null
+        }
+      ],
+      "nics": [
+        {
+          "label": "eth0",
+          "mac": "00:50:56:aa:00:02",
+          "ips": [
+            "10.0.0.12"
+          ],
+          "vlan": null,
+          "network": "prod-vlan10",
+          "switch": null,
+          "security_groups": [],
+          "connected": null
+        }
+      ],
+      "os": {
+        "family": "linux",
+        "distro": "Ubuntu 22.04",
+        "version": "22.04",
+        "kernel": null,
+        "hostname": "web02",
+        "end_of_life": null
+      },
+      "software": {
+        "packages": [
+          {
+            "name": "nginx",
+            "version": "1.18.0",
+            "manager": "apt"
+          },
+          {
+            "name": "php-fpm",
+            "version": "8.1",
+            "manager": "apt"
+          }
+        ],
+        "services": [
+          {
+            "name": "nginx",
+            "state": "running",
+            "description": null,
+            "exec_path": null
+          },
+          {
+            "name": "php8.1-fpm",
+            "state": "running",
+            "description": null,
+            "exec_path": null
+          }
+        ],
+        "processes": [],
+        "listeners": [
+          {
+            "port": 443,
+            "protocol": "tcp",
+            "address": null,
+            "process": "nginx"
+          },
+          {
+            "port": 80,
+            "protocol": "tcp",
+            "address": null,
+            "process": "nginx"
+          }
+        ],
+        "containers": [],
+        "config_files": [],
+        "fingerprints": [
+          {
+            "name": "nginx",
+            "category": "webserver",
+            "version": "1.18.0",
+            "confidence": "observed",
+            "evidence": [
+              "port 443",
+              "nginx.service"
+            ]
+          }
+        ],
+        "deep_inspected": true
+      },
+      "flows": [
+        {
+          "mechanism": "db_connection",
+          "direction": "outbound",
+          "peer": {
+            "node_id": "aws:123456789012:db01",
+            "address": null,
+            "port": 5432,
+            "label": "db01:postgres"
+          },
+          "detail": "app -> postgres",
+          "schedule": null,
+          "confidence": "observed",
+          "evidence": []
+        },
+        {
+          "mechanism": "nfs_mount",
+          "direction": "inbound",
+          "peer": {
+            "node_id": null,
+            "address": "10.0.0.50",
+            "port": null,
+            "label": "nas01:/exports/assets"
+          },
+          "detail": "/exports/assets -> /mnt/assets",
+          "schedule": null,
+          "confidence": "observed",
+          "evidence": []
+        }
+      ],
+      "tags": {
+        "env": "prod",
+        "role": "web"
+      },
+      "annotations": null,
+      "source": {
+        "provider": "aws",
+        "provider_instance": "123456789012",
+        "native_id": "web02",
+        "native_type": null,
+        "raw": {}
+      },
+      "analysis": {
+        "findings": [
+          {
+            "id": "rightsizing-cpu",
+            "category": "rightsizing",
+            "severity": "medium",
+            "title": "Over-provisioned CPU",
+            "detail": "Peak vCPU utilization low for a 4-vCPU shape.",
+            "recommendation": "Downsize to 2 vCPU (t3.medium).",
+            "estimated_monthly_savings_usd": 30.0,
+            "evidence": []
+          }
+        ],
+        "cost_estimates": [
+          {
+            "platform": "aws",
+            "instance_type": "t3.large",
+            "monthly_usd": 60.0,
+            "basis": "on-demand list",
+            "assumptions": [],
+            "is_current": true
+          },
+          {
+            "platform": "gcp",
+            "instance_type": "e2-standard-4",
+            "monthly_usd": 52.0,
+            "basis": "on-demand list",
+            "assumptions": [],
+            "is_current": false
+          },
+          {
+            "platform": "proxmox",
+            "instance_type": "4vcpu/8gb",
+            "monthly_usd": 18.0,
+            "basis": "amortized hardware",
+            "assumptions": [],
+            "is_current": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws:123456789012:db01",
+      "name": "db01",
+      "kind": "vm",
+      "power_state": "running",
+      "placement": {
+        "provider": "aws",
+        "host": "i-host-c",
+        "cluster": "prod-cluster",
+        "resource_pool": null,
+        "datacenter": "dc1",
+        "region": null,
+        "zone": null,
+        "folder": null
+      },
+      "compute": {
+        "vcpus": 8,
+        "cores_per_socket": null,
+        "sockets": null,
+        "memory_mb": 32768,
+        "cpu_model": null,
+        "architecture": "x86_64",
+        "firmware": null,
+        "instance_type": "r6i.xlarge"
+      },
+      "disks": [
+        {
+          "label": "root",
+          "size_gb": 100.0,
+          "disk_type": "ssd",
+          "backing": "datastore1",
+          "path": null,
+          "provisioning": null,
+          "encrypted": null,
+          "iops": null
+        },
+        {
+          "label": "data",
+          "size_gb": 500.0,
+          "disk_type": "nvme",
+          "backing": "fast-pool",
+          "path": null,
+          "provisioning": null,
+          "encrypted": null,
+          "iops": null
+        }
+      ],
+      "nics": [
+        {
+          "label": "eth0",
+          "mac": "00:50:56:aa:00:99",
+          "ips": [
+            "10.0.0.20"
+          ],
+          "vlan": null,
+          "network": "prod-vlan10",
+          "switch": null,
+          "security_groups": [],
+          "connected": null
+        }
+      ],
+      "os": {
+        "family": "linux",
+        "distro": "Rocky Linux 8",
+        "version": "8",
+        "kernel": null,
+        "hostname": "db01",
+        "end_of_life": false
+      },
+      "software": {
+        "packages": [
+          {
+            "name": "postgresql",
+            "version": "14.5",
+            "manager": "yum"
+          }
+        ],
+        "services": [
+          {
+            "name": "postgresql-14",
+            "state": "running",
+            "description": null,
+            "exec_path": null
+          }
+        ],
+        "processes": [],
+        "listeners": [
+          {
+            "port": 5432,
+            "protocol": "tcp",
+            "address": null,
+            "process": "postgres"
+          }
+        ],
+        "containers": [
+          {
+            "id": null,
+            "name": "pgbackup",
+            "image": "prodrigestivill/postgres-backup-local",
+            "image_digest": null,
+            "runtime": "docker",
+            "ports": [],
+            "state": "running"
+          }
+        ],
+        "config_files": [],
+        "fingerprints": [
+          {
+            "name": "postgresql",
+            "category": "database",
+            "version": "14.5",
+            "confidence": "observed",
+            "evidence": [
+              "port 5432"
+            ]
+          }
+        ],
+        "deep_inspected": true
+      },
+      "flows": [
+        {
+          "mechanism": "s3_sync",
+          "direction": "outbound",
+          "peer": {
+            "node_id": null,
+            "address": "s3://prod-db-backups",
+            "port": null,
+            "label": "s3 backups"
+          },
+          "detail": "nightly pg_dump -> s3",
+          "schedule": "0 2 * * *",
+          "confidence": "observed",
+          "evidence": []
+        }
+      ],
+      "tags": {
+        "env": "prod",
+        "role": "db"
+      },
+      "annotations": null,
+      "source": {
+        "provider": "aws",
+        "provider_instance": "123456789012",
+        "native_id": "db01",
+        "native_type": null,
+        "raw": {}
+      },
+      "analysis": {
+        "findings": [
+          {
+            "id": "cost-platform",
+            "category": "cost",
+            "severity": "high",
+            "title": "Cheaper on-prem",
+            "detail": "This DB is a steady-state workload; cloud on-demand is costly.",
+            "recommendation": "Repatriate to Proxmox or buy reserved instance.",
+            "estimated_monthly_savings_usd": 210.0,
+            "evidence": []
+          }
+        ],
+        "cost_estimates": [
+          {
+            "platform": "aws",
+            "instance_type": "r6i.xlarge",
+            "monthly_usd": 300.0,
+            "basis": "on-demand list",
+            "assumptions": [],
+            "is_current": true
+          },
+          {
+            "platform": "proxmox",
+            "instance_type": "8vcpu/32gb",
+            "monthly_usd": 90.0,
+            "basis": "amortized hardware",
+            "assumptions": [],
+            "is_current": false
+          }
+        ]
+      }
+    }
+  ]
+}
